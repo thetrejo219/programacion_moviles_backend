@@ -2,6 +2,7 @@ import {Router} from 'express'
 import {body} from 'express-validator'
 import { AuthController } from '../controllers/AuthController'
 import { handleInputErrors } from '../middleware/validation'
+import { autenticado } from '../middleware/auth'
 
 const router = Router()
 
@@ -24,8 +25,15 @@ router.post('/create-account',
 )
 
 router.post('/login',
+    body('email').isEmail().withMessage('El correo electronico introducido no es valido'),
+    body('password').notEmpty().withMessage('La contraseña no puede ir vacia'),
+    handleInputErrors,
     AuthController.iniciarSesion
 )
 
+router.put('/actualizarPerfil',
+    autenticado,
+    AuthController.actualizarPerfil
+)
 
 export default router

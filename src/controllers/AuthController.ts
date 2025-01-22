@@ -1,6 +1,7 @@
 import { Request,Response } from "express"
 import User from "../models/User"
 import { checkPassword, hashPassword } from "../utils/auth"
+import { generateJWT } from "../utils/jwt"
 
 export class AuthController{
     static createAccount=async(req:Request,res:Response)=>{
@@ -35,10 +36,28 @@ export class AuthController{
                 res.status(409).json({error:error.message})
                 return
             }
-            res.send('Autenticado')
+            const token=generateJWT({id:user.id})
+            res.send(token)
 
         } catch (error) {
             res.send(500).json({error:'Hubo un error'})
+        }
+    }
+    //trabajar para despues
+    static actualizarPerfil=async(req:Request,res:Response)=>{
+        const{name,email}=req.body
+        const usuarioExiste= await User.findOne({email})
+        if(usuarioExiste){
+            const error = new Error('El correo electronico ya esta registrado')
+            res.status(409).json({error:error.message})
+        }
+        req.user.name=name
+        req.user.email=email
+        try {
+            await req.user.save()
+            res.send('Perfil actualizado correctamente')
+        } catch (error) {
+            res.send(500).send('Hubo un error en el servidor')
         }
     }
 }

@@ -1,10 +1,12 @@
-import mongoose,{Schema,Document} from "mongoose";
+import mongoose,{Schema,Document, PopulatedDoc,Types} from "mongoose";
+import { IPublicacion } from "./Publicacion";
 
 export interface IUser extends Document{
     email:string,
     password:string,
     name:string,
     confirmed:boolean
+    logros:PopulatedDoc<IPublicacion & Document>[]
 }
 
 const userSchema:Schema=new Schema({
@@ -25,7 +27,13 @@ const userSchema:Schema=new Schema({
     confirmed:{
         type:Boolean,
         default:false
-    }
+    },
+    logros:[
+        {
+            type:Types.ObjectId,
+            ref:'Publicacion'
+        }
+    ]
 })
 
 const User = mongoose.model<IUser>('User',userSchema)

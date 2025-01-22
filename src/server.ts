@@ -5,6 +5,7 @@ import dotenv from 'dotenv'
 import { connectDB } from './config/db'
 import authRoutes from './routes/authRoutes'
 import { corsConfig } from './config/cors'
+import publicacionRouter from './routes/publicacionRouter'
 
 dotenv.config()
 
@@ -15,5 +16,6 @@ app.use(cors(corsConfig))
 app.use(morgan('dev'))
 app.use(express.json())
 app.use('/api/auth',authRoutes)
+app.use('/api/publicaciones',publicacionRouter)
 
 export default app
