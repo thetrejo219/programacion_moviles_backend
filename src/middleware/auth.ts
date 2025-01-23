@@ -11,6 +11,7 @@ declare global{
         }
     }
 }
+
 export const autenticado=async(req:Request,res:Response,next:NextFunction)=>{
     const bearer = req.headers.authorization
     if(!bearer){

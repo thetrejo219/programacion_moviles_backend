@@ -8,6 +8,10 @@ const router = Router()
 
 router.use(autenticado)
 
+router.get('/publicacion',
+    PublicacionController.obtenerPublicaciones
+)
+
 router.post('/:userId/publicacion',
     param('userId').isMongoId().withMessage('ID no valido'),
     handleInputErrors,

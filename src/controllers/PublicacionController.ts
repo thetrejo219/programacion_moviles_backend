@@ -12,11 +12,23 @@ export class PublicacionController{
         }
         post.persona=req.user.id
         try {
-            await User.findByIdAndUpdate(req.user._id,{
-                $push:{logros:post.id}
-            })
-            await post.save()
+            await Promise.allSettled([
+                User.findByIdAndUpdate(req.user._id,{
+                    $push:{logros:post.id}
+                }),
+                post.save()
+            ])
             res.send('Publicacion creada correctamente')
+        } catch (error) {
+            res.status(500).json({error:'Hubo un error en el servidor'})
+        }
+    }
+    static obtenerPublicaciones=async(req:Request,res:Response)=>{
+        try {
+            const publicaciones = await Publicacion.find({
+
+            })
+            res.json(publicaciones)
         } catch (error) {
             res.status(500).json({error:'Hubo un error en el servidor'})
         }
