@@ -5,25 +5,32 @@ import Publicacion from '../models/Publicacion'
 export class ComentarioControlador{
     static crearComentario=async(req:Request,res:Response)=>{
         const comentario=new Comentario(req.body)
-        const{publicacionId}= req.params
-        const publicacion = await Publicacion.findById(publicacionId)
-        if(!publicacion){
-            const error = new Error('La publicacion no existe')
-            res.status(404).json({error:error.message})
-        }
         comentario.persona=req.user.id
-        comentario.publicacion=publicacion.id
-        await Publicacion.findByIdAndUpdate(publicacionId,{
-            $push:{comentarios:comentario.id}
-        })
-        await comentario.save()
+        comentario.publicacion=req.post.id
         try {
+            await Publicacion.findByIdAndUpdate(req.post.id,{
+                $push:{comentarios:comentario.id}
+            })
+            await comentario.save()
             res.send('Comentario guardado correctamente')
         } catch (error) {
             res.status(500).json({error:'Hubo un error en el servidor'})
         }
     }
-    static obtenerComentariosPublicacion=(req:Request,res:Response)=>{
-        
+    static obtenerComentariosPublicacion=async(req:Request,res:Response)=>{
+        try {
+            const publicacion = await Publicacion.findById(req.post.id).populate('comentarios')
+            const {comentarios} = publicacion
+            if(comentarios.length===0){
+                const error = new Error('No hay comentarios en la publicacion')
+                res.status(404).json({error:error.message})
+            }
+            res.json(publicacion)
+        } catch (error) {
+            res.status(500).json({error:'Hubo un error en el servidor'})
+        }
+    }
+    static actualizarComentario=async(req:Request,res:Response)=>{
+
     }
 }

@@ -15,9 +15,9 @@ connectDB()
 const app = express();
 app.use(cors(corsConfig))
 app.use(morgan('dev'))
-app.use(express.json())
-app.use('/api/auth',authRoutes)
+app.use(express.json({type:'application/json'}))
 app.use('/api/publicaciones',publicacionRouter)
+app.use('/api/auth',authRoutes)
 app.use('/api/comentarios',comentarioRouter)
 
 export default app

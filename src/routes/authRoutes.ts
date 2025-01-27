@@ -6,6 +6,11 @@ import { autenticado } from '../middleware/auth'
 
 const router = Router()
 
+router.get('/user',
+    autenticado,
+    AuthController.usuario
+)
+
 router.post('/create-account',
     body('name')
     .notEmpty().withMessage('El nombre no puede ir vacio'),
