@@ -10,6 +10,9 @@ router.get('/user',
     autenticado,
     AuthController.usuario
 )
+router.get('/:userProfile',
+    AuthController.buscarPerfilUsuario
+)
 
 router.post('/create-account',
     body('name')
@@ -39,6 +42,15 @@ router.post('/login',
 router.put('/actualizarPerfil',
     autenticado,
     AuthController.actualizarPerfil
+)
+
+router.post('/ponerPerfil',
+    autenticado,
+    AuthController.ponerFotoPerfil
+)
+router.post('/ponerPortada',
+    autenticado,
+    AuthController.ponerFotoPortada
 )
 
 export default router

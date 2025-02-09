@@ -2,6 +2,8 @@ import mongoose,{Schema,Document, PopulatedDoc,Types} from "mongoose";
 import { IPublicacion } from "./Publicacion";
 
 export interface IUser extends Document{
+    imagenPerfil:string,
+    imagenPortada:string
     email:string,
     password:string,
     name:string,
@@ -10,6 +12,14 @@ export interface IUser extends Document{
 }
 
 const userSchema:Schema=new Schema({
+    imagenPerfil:{
+        type: String,
+        default:''
+    },
+    imagenPortada:{
+        type: String,
+        default:''
+    },
     email:{
         type:String,
         required:true,

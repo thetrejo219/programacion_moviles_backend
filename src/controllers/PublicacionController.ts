@@ -34,7 +34,7 @@ export class PublicacionController{
         try {
             const publicaciones = await Publicacion.find({
 
-            })
+            }).populate('persona')
             res.json(publicaciones)
         } catch (error) {
             res.status(500).json({error:'Hubo un error en el servidor'})

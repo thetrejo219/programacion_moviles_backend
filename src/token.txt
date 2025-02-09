@@ -1,0 +1,10 @@
+ if ( $variable === 1 ) { 
+    $variable == 2
+ }
+<=
+>=
+$resultado := $a + $b;
+$resultado = $c - $d;
+$resultado = $e * $f;
+$resultado = $g / $h;
+

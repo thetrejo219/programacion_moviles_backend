@@ -1,7 +1,10 @@
 import { Request,Response } from "express"
 import User from "../models/User"
+import formidable from 'formidable'
+import {v4 as uuid} from 'uuid'
 import { checkPassword, hashPassword } from "../utils/auth"
 import { generateJWT } from "../utils/jwt"
+import cloudinary from "../config/cloudinary"
 
 export class AuthController{
     static createAccount=async(req:Request,res:Response)=>{
@@ -65,6 +68,57 @@ export class AuthController{
             res.json(req.user)
         } catch (error) {
             res.send(500).json({error:'Hubo un error'})
+        }
+    }
+    static buscarPerfilUsuario=async(req:Request,res:Response)=>{
+        try {
+            const {userProfile} = req.params
+            const publicacion = await User.findById(userProfile).populate('logros')
+            res.send(publicacion)
+        } catch (error) {
+            res.send(500).json({error:'Hubo un error'})
+        }
+    }
+    static ponerFotoPerfil=async(req:Request,res:Response)=>{
+        const form = formidable({multiples:false})
+        try {
+            form.parse(req,(error,fields,files)=>{
+                cloudinary.uploader.upload(files.file[0].filepath,{},async function(error,result) {
+                    if(error){
+                        const error = new Error('Hubo un error al subir la imagen')
+                        res.status(500).json({error:error.message})
+                    }
+                    if(result){
+                        req.user.imagenPerfil = result.secure_url
+                        await req.user.save()
+                        res.json({image:result.secure_url})
+                    }
+                })
+            })
+        } catch (e) {
+            const error = new Error('Hubo un error')
+            res.status(500).json({error:error.message})
+        }
+    }
+    static ponerFotoPortada=async(req:Request,res:Response)=>{
+        const form = formidable({multiples:false})
+        try {
+            form.parse(req,(error,fields,files)=>{
+                cloudinary.uploader.upload(files.file[0].filepath,{},async function(error,result) {
+                    if(error){
+                        const error = new Error('Hubo un error al subir la imagen')
+                        res.status(500).json({error:error.message})
+                    }
+                    if(result){
+                        req.user.imagenPortada = result.secure_url
+                        await req.user.save()
+                        res.json({image:result.secure_url})
+                    }
+                })
+            })
+        } catch (e) {
+            const error = new Error('Hubo un error')
+            res.status(500).json({error:error.message})
         }
     }
 }
